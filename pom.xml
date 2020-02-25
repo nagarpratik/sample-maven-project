@@ -1,0 +1,291 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.salesforce.commercecloud</groupId>
+    <artifactId>cc-starter-parent</artifactId>
+    <version>0.0.5-jdk11-alpha</version>
+  </parent>
+
+  <groupId>com.salesforce.commercecloud</groupId>
+  <artifactId>sample-rest-springboot</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+  <description>TODO: I will be a good citizen and set description later!</description>
+
+  <organization>
+    <name>Commerce Cloud</name>
+    <url>http://www.salesforce.com</url>
+  </organization>
+
+  <distributionManagement>
+    <repository>
+      <id>maven-sfci</id>
+      <name>SFCI Releases</name>
+      <url>https://nexus.soma.salesforce.com/nexus/content/repositories/releases</url>
+    </repository>
+    <snapshotRepository>
+      <id>maven-sfci</id>
+      <name>SFCI Snapshots</name>
+      <url>https://nexus.soma.salesforce.com/nexus/content/repositories/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
+
+  <properties>
+    <cc-starter.version>0.0.5-jdk11-alpha</cc-starter.version>
+  </properties>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+
+    <testResources>
+      <testResource>
+        <directory>src/test/resources</directory>
+        <filtering>true</filtering>
+      </testResource>
+    </testResources>
+
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <mainClass>com.salesforce.commercecloud.sample.Application</mainClass>
+          <executable>true</executable>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>repackage</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+      </plugin>
+
+      <plugin>
+        <groupId>io.swagger.codegen.v3</groupId>
+        <artifactId>swagger-codegen-maven-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>com.salesforce.commercecloud</groupId>
+            <artifactId>cc-starter-openapi</artifactId>
+            <version>${cc-starter.version}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>server</id>
+            <goals>
+              <goal>generate</goal>
+            </goals>
+            <configuration>
+              <inputSpec>${project.basedir}/src/main/resources/api.yaml</inputSpec>
+              <language>spring</language>
+              <library>spring-boot</library>
+              <output>${project.build.directory}/generated-sources</output>
+              <ignoreFileOverride>${project.basedir}/src/main/resources/.openapi-codegen-ignore
+              </ignoreFileOverride>
+              <invokerPackage>com.salesforce.commercecloud.sample.api.generated</invokerPackage>
+              <!-- Configure API generation. -->
+              <apiPackage>com.salesforce.commercecloud.sample.api.generated</apiPackage>
+              <!-- Configure model generation. -->
+              <modelPackage>com.salesforce.commercecloud.sample.api.generated</modelPackage>
+
+              <configOptions>
+                <sourceFolder>swagger</sourceFolder>
+                <java8>true</java8>
+                <dateLibrary>java8</dateLibrary>
+                <serializableModel>true</serializableModel>
+                <delegatePattern>true</delegatePattern>
+              </configOptions>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-contract-maven-plugin</artifactId>
+        <configuration>
+          <baseClassForTests>com.salesforce.commercecloud.sample.rest.contract.BaseClass</baseClassForTests>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${project.build.directory}/generated-sources/swagger/</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.salesforce.commercecloud</groupId>
+      <artifactId>cc-starter-logging</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.salesforce.commercecloud</groupId>
+      <artifactId>cc-starter-scopes</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.salesforce.commercecloud</groupId>
+      <artifactId>cc-starter-admin</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.salesforce.commercecloud</groupId>
+      <artifactId>cc-starter-tracing</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>com.salesforce.commercecloud</groupId>
+      <artifactId>cc-starter-openapi</artifactId>
+    </dependency>
+
+    <!-- Test dependencies -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <optional>true</optional>
+    </dependency>
+
+    <dependency>
+      <groupId>javax.xml.bind</groupId>
+      <artifactId>jaxb-api</artifactId>
+      <version>2.3.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-contract-verifier</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>rest-assured</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>io.rest-assured</groupId>
+      <artifactId>spring-mock-mvc</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.toomuchcoding.jsonassert</groupId>
+      <artifactId>jsonassert</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <profiles>
+    <profile>
+      <id>docker</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>com.spotify</groupId>
+            <artifactId>dockerfile-maven-plugin</artifactId>
+            <version>1.4.4</version>
+            <executions>
+              <execution>
+                <id>default</id>
+                <goals>
+                  <goal>build</goal>
+                </goals>
+              </execution>
+            </executions>
+            <dependencies>
+              <dependency>
+                <groupId>javax.activation</groupId>
+                <artifactId>activation</artifactId>
+                <version>1.1.1</version>
+              </dependency>
+            </dependencies>
+            <configuration>
+              <googleContainerRegistryEnabled>false</googleContainerRegistryEnabled>
+              <imageName>sample-rest-springboot</imageName>
+              <imageTag>latest</imageTag>
+              <repository>sample-rest-springboot</repository>
+              <buildArgs>
+                <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+                <JAVA_OPTS></JAVA_OPTS>
+              </buildArgs>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+</project>

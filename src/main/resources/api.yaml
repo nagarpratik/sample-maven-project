@@ -1,0 +1,43 @@
+openapi: '3.0.2'
+info:
+  version: '1.0'
+  title: sample-rest-springboot
+  description: >-
+    TODO: I will be a good citizen and set description later!
+servers:
+- url: /api/v1
+# https://github.com/OAI/OpenAPI-Specification/issues/169
+paths:
+  /greetings/locales/{languageCode}:
+    get:
+      description: Gets the Greeting in the provided language/locale scope
+      parameters:
+      - in: path
+        required: true
+        name: languageCode
+        schema:
+          type: string
+        description: The language code like en_US
+      responses:
+        '200':
+          description: Response of Hello World
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GreetingResponse'
+
+components:
+  schemas:
+    GreetingResponse:
+      allOf:
+      - $ref: '/common-components.yaml#/components/schemas/StatusResponse'
+      - type: object
+        properties:
+          data:
+            $ref: '#/components/schemas/GreetingModel'
+
+    GreetingModel:
+      type: object
+      properties:
+        greeting:
+          type: string

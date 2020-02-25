@@ -1,0 +1,24 @@
+# This file uses the version 3 docker-compose file format, described here:
+# https://docs.docker.com/compose/compose-file/#version-3
+
+version: "3"
+
+services:
+  sample-rest-springboot:
+      container_name: cc-starter-helloworld
+      image: sample-rest-springboot:latest
+      ports:
+        - "8080:8080"
+        - "8081:8081"
+  
+#  postgres:
+#      container_name: postgres
+#      image: ops0-artifactrepo1-0-prd.data.sfdc.net/commercecloud/postgres:latest
+#      volumes:
+#         - /var/lib/postgresql/data
+#      environment:
+#        - POSTGRES_DB=acme
+#        - POSTGRES_USER=acmeuser
+#        - POSTGRES_PASSWORD=acmepassword
+#      ports:
+#        - 5432:5432
